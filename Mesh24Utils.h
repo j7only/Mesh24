@@ -67,9 +67,9 @@ class Mesh24UtilsClass {
       while (length >= 2) {
         if (!scanAsHex(data[index++], buf)) {
           return false;
-	}
-	length -= 2;
-	buf += 2;
+        }
+        length -= 2;
+        buf += 2;
       }
       return length == 0;
     }
@@ -89,15 +89,15 @@ class Mesh24UtilsClass {
     bool scanAsHexDigit(byte& data, char c) {
       if (('0' <= c) && (c <= '9')) {
         data = c - '0';
-	return true;
+        return true;
       }
       if (('A' <= c) && (c <= 'F')) {
         data = c - 'A' + 10;
-	return true;
+        return true;
       }
       if (('a' <= c) && (c <= 'f')) {
         data = c - 'a' + 10;
-	return true;
+        return true;
       }
       return false;
     }

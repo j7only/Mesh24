@@ -41,17 +41,17 @@ class Mesh24RouteMgr {
           if (to == routes[index].to) {
             if (bestPercent < routes[index].percent) {
               bestPercent = routes[index].percent;
-	      bestRoute = to;
-	    }
-	  } else {
+              bestRoute = to;
+            }
+          } else {
             int percent = getPercent(routes[index].to, to);
-	    int combinedPercent = ((int) routes[index].percent * (int) percent + 50) / 100;
-	    if (bestPercent < combinedPercent) {
-	      bestPercent = combinedPercent;
-	      bestRoute = routes[index].to;
-	    }
-	  }
-	}
+            int combinedPercent = ((int) routes[index].percent * (int) percent + 50) / 100;
+            if (bestPercent < combinedPercent) {
+              bestPercent = combinedPercent;
+              bestRoute = routes[index].to;
+            }
+          }
+        }
       }
 #ifdef MESH24_DEBUG_ROUTE_MGR
       Serial.print(millis());
@@ -104,12 +104,12 @@ class Mesh24RouteMgr {
 
     void printRoutes(Stream& stream) {
       for (int index = 0; index < count; ++index) {
-	stream.print(" ");
-	stream.print(routes[index].from);
-	stream.print(",");
-	stream.print(routes[index].to);
-	stream.print("->");
-	stream.print(routes[index].percent);
+        stream.print(" ");
+        stream.print(routes[index].from);
+        stream.print(",");
+        stream.print(routes[index].to);
+        stream.print("->");
+        stream.print(routes[index].percent);
       }
     }
 
@@ -123,7 +123,7 @@ class Mesh24RouteMgr {
       for (int index = 0; index < count; ++index) {
         if ((from == routes[index].from) && (to == routes[index].to)) {
           return index;
-	}
+        }
       }
       return -1;
     }
@@ -156,7 +156,7 @@ class Mesh24RouteMgr {
       route.percent = percent;
       while (index) {
         routes[index] = routes[index - 1];
-	--index;
+        --index;
       }
       routes[0] = route;
 #ifdef MESH24_DEBUG_ROUTE_MGR
