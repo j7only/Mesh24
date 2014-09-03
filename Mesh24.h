@@ -139,7 +139,7 @@ class Mesh24 {
       } else {
         unsigned long sessionId;
         message.readPayload(-sizeof(sessionId), sessionId);
-        return (sessionId == 0) || sessionMgr.isValid(message.getFrom(), sessionId);
+        return (sessionId & 0x80000000UL) || sessionMgr.isValid(message.getFrom(), sessionId);
       }
     }
     
@@ -236,14 +236,13 @@ class Mesh24 {
       }
       message.setFrom(addr);
       if (secured) {
-	// TODO make sure sessionId is even
         unsigned long sessionReqId = messageStore.add(message);
         Mesh24Message request(addr, message.getTo(), MESH24_MSG_CREATE_SESSION_REQ);
         request.writePayload(sessionReqId);
         writeRouted(request);
       } else {
-	// TODO add odd random number rather than 0
-	writeRouted(message, 0);
+        unsigned long sessionId = random(0x7fffffffL) | 0x80000000UL;
+        writeRouted(message, sessionId);
       }
     }
 
