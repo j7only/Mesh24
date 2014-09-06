@@ -36,7 +36,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 class Mesh24 {
   public:
-    Mesh24(byte cePin, byte csPin): radio(cePin, csPin), channel(75), subnet(0xDEADBEAFUL), addr(1), heartbeatTimer(60 * 1000UL) {
+    Mesh24(byte cePin, byte csPin): radio(cePin, csPin), channel(75), subnet(0xDEADBEAFUL), addr(1), heartbeatTimer(5 * 60 * 1000UL) {
       memset(encryptionKey, 0, sizeof(encryptionKey));
     }
 
@@ -113,7 +113,8 @@ class Mesh24 {
       message.writePayload(Mesh24Uptime.getSeconds());
       message.writePayload(Mesh24Temperature.read());
       message.writePayload(Mesh24Voltage.read());
-      writeRouted(message, 0);
+      addRandomPadding(message);
+      writeRouted(message);
     }
   
     void powerDown() {
@@ -150,6 +151,7 @@ class Mesh24 {
         Mesh24Message response(addr, message.getFrom(), MESH24_MSG_CREATE_SESSION_RESP);
         response.writePayload(sessionReqId);
         response.writePayload(sessionId);
+        addRandomPadding(response);
         writeRouted(response);
     }
   
@@ -163,7 +165,8 @@ class Mesh24 {
         unsigned long sessionId;
         message.readPayload(sessionId);
         sessionMgr.add(message.getFrom(), sessionId);
-        writeRouted(response, sessionId);
+        response.writePayload(-sizeof(sessionId), sessionId);
+        writeRouted(response);
     }
     
     bool readRouted(Mesh24Message& message) {
@@ -239,18 +242,19 @@ class Mesh24 {
         unsigned long sessionReqId = messageStore.add(message);
         Mesh24Message request(addr, message.getTo(), MESH24_MSG_CREATE_SESSION_REQ);
         request.writePayload(sessionReqId);
+        addRandomPadding(request);
         writeRouted(request);
       } else {
-        unsigned long sessionId = random(0x7fffffffL) | 0x80000000UL;
-        writeRouted(message, sessionId);
+        addRandomPadding(message);
+        writeRouted(message);
       }
     }
 
-    void writeRouted(Mesh24Message& message, unsigned long sessionId) {
+    void addRandomPadding(Mesh24Message& message) {
+      unsigned long sessionId = random(0x7fffffffL) | 0x80000000UL;
       message.writePayload(-sizeof(sessionId), sessionId);
-      writeRouted(message);
     }
-  
+
     void writeRouted(const Mesh24Message& message) {
       byte to = routeMgr.findBestRoute(addr, message.getTo());
       bool ok = writeEncrypted(to, message, true);
