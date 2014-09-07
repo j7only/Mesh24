@@ -33,8 +33,8 @@ Not just all messages are protected using [AES256](http://en.wikipedia.org/wiki/
 - **Can run for a year or more on a single coin battery**  
 Mesh24 can power up and down the radio to conserve battery life.  Combined that with putting the processor in sleep mode, a node can run a year or more on a single coin battery, such as, CR2032, while waking up once every few minutes to send sensor readings.  See examples and documentation for more details.
 
-- **Built-in status message sent every 5 minutes**  
-By default, nodes in the network will send a status message in every five minutes.  (This can be turned off, and the frequency is configurable.)  The status message contains
+- **Built-in heartbeat message sent every 5 minutes**  
+By default, nodes in the network will send a heartbeat message in every five minutes.  (This can be turned off, and the frequency is configurable.)  Heartbeat can be used to detect when a node goes off-line.  The message contains
   - Uptime of the node in seconds (will __not__ roll over after about 50 days as millis() call does),
   - Voltage using atmega's internal voltage reading, and
   - Temperature using atmega's internal temperature reading.
